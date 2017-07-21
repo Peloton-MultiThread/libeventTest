@@ -1,0 +1,1 @@
+/usr/bin/c++   -g   CMakeFiles/libeventTest.dir/main.cpp.o CMakeFiles/libeventTest.dir/threads.cpp.o  -o libeventTest  -L/usr/local/lib -Wl,-rpath,/usr/local/lib /usr/local/lib/libevent.a -lpthread 
