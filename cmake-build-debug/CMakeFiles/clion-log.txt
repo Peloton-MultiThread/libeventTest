@@ -1,0 +1,4 @@
+/home/yuchen/Software/clion-2017.1.3/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/yuchen/CMU/DatabaseGroup/master/libeventTest
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/yuchen/CMU/DatabaseGroup/master/libeventTest/cmake-build-debug
