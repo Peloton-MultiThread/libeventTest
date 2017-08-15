@@ -1,7 +1,7 @@
 #include "threads.h"
 
 #define LISTEN_PORT 11223
-#define BUFSIZE 10000
+#define BUFSIZE 512
 
 // read content from client, print them out and count how many times the WorkerThread is triggered
 void client_event_cb(evutil_socket_t fd, short evflags, void *args) {

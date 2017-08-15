@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 #define BUF_MAX 2
-#define COUNT 20000
+#define COUNT 5
 
 int main() {
   std::cout << "Hello, World!" << std::endl;
