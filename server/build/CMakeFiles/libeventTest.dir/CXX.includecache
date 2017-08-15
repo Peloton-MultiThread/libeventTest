@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/threads.h
+evutil.h
+-
+cstdio
+-
+cstdlib
+-
+strings.h
+-
+unistd.h
+-
+iostream
+-
+event.h
+../include/event.h
+
+/home/yuchen/CMU/DatabaseGroup/master/libeventTest/server/main.cpp
+memory
+-
+thread
+-
+threads.h
+/home/yuchen/CMU/DatabaseGroup/master/libeventTest/server/threads.h
+
+/home/yuchen/CMU/DatabaseGroup/master/libeventTest/server/threads.cpp
+threads.h
+/home/yuchen/CMU/DatabaseGroup/master/libeventTest/server/threads.h
+

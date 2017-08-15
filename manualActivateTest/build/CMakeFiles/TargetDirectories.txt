@@ -1,0 +1,3 @@
+/home/yuchen/CMU/DatabaseGroup/master/libeventTest/manualActivateTest/build/CMakeFiles/edit_cache.dir
+/home/yuchen/CMU/DatabaseGroup/master/libeventTest/manualActivateTest/build/CMakeFiles/manualActivateTest.dir
+/home/yuchen/CMU/DatabaseGroup/master/libeventTest/manualActivateTest/build/CMakeFiles/rebuild_cache.dir
