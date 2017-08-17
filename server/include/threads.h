@@ -18,7 +18,7 @@ class WorkerThread {
   void launch();
   int send_fd_;
   int recv_fd_;
-  struct event_base *eb;
+  event_base *eb;
   struct event *event_;
   event_callback_fn master_event_callback_ptr;
   event_callback_fn client_event_callback_ptr;

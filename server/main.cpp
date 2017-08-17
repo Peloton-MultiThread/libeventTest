@@ -9,8 +9,6 @@ int main() {
   std::shared_ptr<WorkerThread> workerThread = std::make_shared<WorkerThread>();
   std::shared_ptr<MasterThread> masterThread = std::make_shared<MasterThread>(workerThread.get());
 
-  // clientThread tries to connect to masterThread
-
   // workerThread runs in a seperate thread
   std::thread worker_thread(startWorker, workerThread.get());
 

@@ -6,5 +6,5 @@ CXX_FLAGS = -g   -std=gnu++11
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/yuchen/CMU/DatabaseGroup/master/libeventTest/server/include 
+CXX_INCLUDES = -I/home/tim/Documents/project/libeventTestServer/include 
 

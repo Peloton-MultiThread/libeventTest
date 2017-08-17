@@ -1,1 +1,1 @@
-/usr/bin/c++      CMakeFiles/libeventClient.dir/main.cpp.o  -o libeventClient 
+/usr/bin/c++   -g   CMakeFiles/libeventClient.dir/main.cpp.o  -o libeventClient 

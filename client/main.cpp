@@ -4,8 +4,8 @@
 #include <strings.h>
 #include <unistd.h>
 
-#define BUF_MAX 2
-#define COUNT 5
+#define BUF_MAX 20
+#define COUNT 4
 
 int main() {
   std::cout << "Hello, World!" << std::endl;
@@ -28,19 +28,18 @@ int main() {
     std::cout << "fail to connect" << std::endl;
     return -1;
   }
-  int i = 0;
-  while(i < COUNT) {
+
+  for (int i = 0; i < COUNT; i++) {
     char buf[BUF_MAX];
-    int j = 0;
-    for (j = 0; j < BUF_MAX; j++) {
-      buf[j] = 'A' + i % 26;
+    for (int j = 0; j < BUF_MAX; j++) {
+      buf[j] = 'A' + i;
     }
-    //buf[BUF_MAX - 1] = '\0';
-    send(clientfd, buf, BUF_MAX, 0);
-    i++;
+    //buf[BUF_MAX] = '\0';
+    write(clientfd, buf, BUF_MAX);
+    sleep(1);
     std::cout << "send: " << i << ", " << buf << std::endl;
+    //shutdown(clientfd, SHUT_RDWR);
   }
-  shutdown(clientfd, SHUT_RDWR);
   close(clientfd);
   return 0;
 }

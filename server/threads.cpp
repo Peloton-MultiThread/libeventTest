@@ -1,25 +1,51 @@
 #include "threads.h"
+#include <fcntl.h>
+#include <arpa/inet.h>
+#include <netinet/tcp.h>
 
 #define LISTEN_PORT 11223
-#define BUFSIZE 512
+#define BUFSIZE 2
 
+
+/* Set the socket to non-blocking mode */
+inline void SetNonBlocking(evutil_socket_t fd) {
+  auto flags = fcntl(fd, F_GETFL);
+  flags |= O_NONBLOCK;
+  if (fcntl(fd, F_SETFL, flags) < 0) {
+  }
+}
+
+/* Set TCP No Delay for lower latency */
+inline void SetTCPNoDelay(evutil_socket_t fd) {
+  int one = 1;
+  setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &one, sizeof one);
+}
 // read content from client, print them out and count how many times the WorkerThread is triggered
 void client_event_cb(evutil_socket_t fd, short evflags, void *args) {
   int static count = 0;
   WorkerThread *wt = static_cast<WorkerThread*>(args);
-  char buf[BUFSIZE + 1];
-  int read_bytes = read(fd, buf, BUFSIZE);
-  if (read_bytes < 0) {
-    std::cout << "error reading bytes in client_event_cb";
-    exit(1);
+  char buf[BUFSIZE];
+
+  int read_bytes;
+  while ((read_bytes = read(fd, buf, BUFSIZE)) > 0) {
+
+    buf[read_bytes] = '\0';
+    count++;
+    std::cout << "reading: " << read_bytes << ", " << buf << ", count: " << count << ", src: " << fd << ", evflags: "
+              << evflags << std::endl;
   }
-  buf[read_bytes] = '\0';
-  count++;
-  std::cout << "reading: " << read_bytes << ", " << buf << ", count: " << count << ", src: "<< fd << ", evflags: " << evflags << std::endl;
-  sleep(1);
-  //event_del(wt->event_);
-  //wt->event_ = event_new(wt->eb, fd, EV_READ | EV_PERSIST, client_event_cb, wt);
-  //event_add(wt->event_, 0);
+  if (read_bytes < 0) {
+    if (errno == EAGAIN || errno == EWOULDBLOCK) {
+      std::cout << "pipe empty" << std::endl;
+    }
+  }
+  if (read_bytes == 0) {
+    std::cout << "finish reading, close the event" << std::endl;
+    event_del(wt->event_);
+    event_free(wt->event_);
+    close(fd);
+  }
+  std::cout << "end of callback" << std::endl;
 }
 
 // read connected fd from pipe and add event associated with the fd
@@ -33,7 +59,11 @@ void master_event_cb(evutil_socket_t fd, short evflags, void *args) {
     exit(1);
   }
   std::cout << "worker read from pipe, " << client_fd << std::endl;
-  wt->event_ = event_new(wt->eb, client_fd, EV_READ | EV_PERSIST, client_event_cb, wt);
+
+  SetNonBlocking(client_fd);
+  SetTCPNoDelay(client_fd);
+
+  wt->event_ = event_new(wt->eb, client_fd, EV_READ | EV_PERSIST,  client_event_cb, wt);
   event_add(wt->event_, 0);
   std::cout << "add client event onto worker thread's eb" << std::endl;
 }
@@ -72,7 +102,7 @@ void MasterThread::launch() {
   childfd = accept(parentfd, (struct sockaddr *) &clientaddr, &clientlen);
   std::cout << "master receives connection " << childfd << std::endl;
   notifyWorker(childfd);
-  //while(1);
+//  while(1);
 }
 
 // write connected fd into workerThread's pipe
@@ -90,9 +120,9 @@ WorkerThread::WorkerThread() {
   send_fd_ = fds[1];
   recv_fd_ = fds[0];
   eb = event_base_new();
-  struct event* pipe_event = event_new(eb, recv_fd_, EV_READ,
+  event* event = event_new(eb, recv_fd_, EV_READ | EV_PERSIST,
                                    master_event_cb, this);
-  event_add(pipe_event, 0);
+  event_add(event, 0);
   std::cout << "Worker thread constructor, pipe: " << send_fd_ << ", " << recv_fd_ << std::endl;
 }
 
