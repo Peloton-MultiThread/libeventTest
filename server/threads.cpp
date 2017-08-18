@@ -2,13 +2,25 @@
 #include <fcntl.h>
 #include <arpa/inet.h>
 #include <netinet/tcp.h>
+#include <thread>
 
 #define LISTEN_PORT 11223
-#define BUFSIZE 2
+#define BUFSIZE 1
 
+
+void active_callback(void* args){
+
+  std::cout << "active_callback" << std::endl;
+  event* act_event = static_cast<event*>(args);
+  if (act_event == nullptr){
+    return;
+  }
+  sleep(1);
+  event_active(act_event, EV_WRITE, 0);
+}
 
 /* Set the socket to non-blocking mode */
-inline void SetNonBlocking(evutil_socket_t fd) {
+void SetNonBlocking(evutil_socket_t fd) {
   auto flags = fcntl(fd, F_GETFL);
   flags |= O_NONBLOCK;
   if (fcntl(fd, F_SETFL, flags) < 0) {
@@ -16,7 +28,7 @@ inline void SetNonBlocking(evutil_socket_t fd) {
 }
 
 /* Set TCP No Delay for lower latency */
-inline void SetTCPNoDelay(evutil_socket_t fd) {
+void SetTCPNoDelay(evutil_socket_t fd) {
   int one = 1;
   setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &one, sizeof one);
 }
@@ -27,12 +39,15 @@ void client_event_cb(evutil_socket_t fd, short evflags, void *args) {
   char buf[BUFSIZE];
 
   int read_bytes;
-  while ((read_bytes = read(fd, buf, BUFSIZE)) > 0) {
+  if ((read_bytes = read(fd, buf, BUFSIZE)) > 0) {
 
     buf[read_bytes] = '\0';
     count++;
     std::cout << "reading: " << read_bytes << ", " << buf << ", count: " << count << ", src: " << fd << ", evflags: "
               << evflags << std::endl;
+    //create a new thread and detach
+    std::thread worker_worker(active_callback, wt->event_);
+    worker_worker.detach();
   }
   if (read_bytes < 0) {
     if (errno == EAGAIN || errno == EWOULDBLOCK) {
@@ -41,8 +56,8 @@ void client_event_cb(evutil_socket_t fd, short evflags, void *args) {
   }
   if (read_bytes == 0) {
     std::cout << "finish reading, close the event" << std::endl;
-    event_del(wt->event_);
-    event_free(wt->event_);
+//    event_del(wt->event_);
+//    event_free(wt->event_);
     close(fd);
   }
   std::cout << "end of callback" << std::endl;
