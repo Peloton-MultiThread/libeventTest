@@ -2,10 +2,16 @@
 #include <fcntl.h>
 #include <arpa/inet.h>
 #include <netinet/tcp.h>
+#include <thread>
 
+#include <event2/thread.h>
 #define LISTEN_PORT 11223
-#define BUFSIZE 2
+#define BUFSIZE 1
 
+void do_ac(void* arg) {
+  event* event1 = static_cast<event*>(arg);
+  event_active(event1,EV_WRITE, 0);
+}
 
 /* Set the socket to non-blocking mode */
 inline void SetNonBlocking(evutil_socket_t fd) {
@@ -27,12 +33,15 @@ void client_event_cb(evutil_socket_t fd, short evflags, void *args) {
   char buf[BUFSIZE];
 
   int read_bytes;
-  while ((read_bytes = read(fd, buf, BUFSIZE)) > 0) {
+  if ((read_bytes = read(fd, buf, BUFSIZE)) > 0) {
 
     buf[read_bytes] = '\0';
     count++;
     std::cout << "reading: " << read_bytes << ", " << buf << ", count: " << count << ", src: " << fd << ", evflags: "
               << evflags << std::endl;
+    wt->IncreaseCounter(true);
+    event_del(wt->io_event_);
+    std::thread(do_ac, wt->activate_event_).detach();
   }
   if (read_bytes < 0) {
     if (errno == EAGAIN || errno == EWOULDBLOCK) {
@@ -41,11 +50,32 @@ void client_event_cb(evutil_socket_t fd, short evflags, void *args) {
   }
   if (read_bytes == 0) {
     std::cout << "finish reading, close the event" << std::endl;
-    event_del(wt->event_);
-    event_free(wt->event_);
+    event_del(wt->io_event_);
+    event_free(wt->io_event_);
     close(fd);
   }
   std::cout << "end of callback" << std::endl;
+}
+
+
+
+
+void WorkerThread::IncreaseCounter(bool io) {
+  counter++;
+  std::cout << "++++++++++++++++++" << std::endl;
+  if (io) {
+    std::cout << "increase by io" << std::endl;
+  } else {
+    std::cout << "increase by trigger" << std::endl;
+  }
+
+  std::cout << "Counter is now " << counter << "." << std::endl;
+  std::cout << "++++++++++++++++++" << std::endl;
+}
+void active_cb(evutil_socket_t fd, short evflags, void *args) {
+  WorkerThread *wt = static_cast<WorkerThread*>(args);
+  wt->IncreaseCounter(false);
+  event_add(wt->io_event_,0);
 }
 
 // read connected fd from pipe and add event associated with the fd
@@ -63,8 +93,9 @@ void master_event_cb(evutil_socket_t fd, short evflags, void *args) {
   SetNonBlocking(client_fd);
   SetTCPNoDelay(client_fd);
 
-  wt->event_ = event_new(wt->eb, client_fd, EV_READ | EV_PERSIST,  client_event_cb, wt);
-  event_add(wt->event_, 0);
+  wt->io_event_ = event_new(wt->eb, client_fd, EV_READ | EV_PERSIST,  client_event_cb, wt);
+  wt->activate_event_ = event_new(wt->eb, -1, EV_WRITE | EV_PERSIST, active_cb, wt);
+  event_add(wt->io_event_, 0);
   std::cout << "add client event onto worker thread's eb" << std::endl;
 }
 

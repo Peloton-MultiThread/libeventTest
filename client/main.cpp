@@ -4,8 +4,8 @@
 #include <strings.h>
 #include <unistd.h>
 
-#define BUF_MAX 20
-#define COUNT 4
+#define BUF_MAX 2
+#define COUNT 2
 
 int main() {
   std::cout << "Hello, World!" << std::endl;

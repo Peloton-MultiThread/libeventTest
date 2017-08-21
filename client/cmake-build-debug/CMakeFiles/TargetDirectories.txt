@@ -1,3 +1,3 @@
-/home/tim/Documents/project/libeventTestClient/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/tim/Documents/project/libeventTestClient/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/tim/Documents/project/libeventTestClient/cmake-build-debug/CMakeFiles/libeventClient.dir
+/home/tim/Documents/project/libeventTest/client/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/tim/Documents/project/libeventTest/client/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/tim/Documents/project/libeventTest/client/cmake-build-debug/CMakeFiles/libeventClient.dir

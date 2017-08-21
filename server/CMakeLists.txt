@@ -15,5 +15,5 @@ link_libraries(${RUNTIME_LIB})
 
 add_executable(libeventTest ${SOURCE_FILES})
 
-target_link_libraries(libeventTest pthread)
+target_link_libraries(libeventTest pthread event_pthreads event)
 

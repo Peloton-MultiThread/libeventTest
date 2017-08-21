@@ -3,7 +3,7 @@
 
 CMakeFiles/libeventTest.dir/main.cpp.o
  ../include/threads.h
- /home/tim/Documents/project/libeventTestServer/main.cpp
+ /home/tim/Documents/project/libeventTest/server/main.cpp
 CMakeFiles/libeventTest.dir/threads.cpp.o
  ../include/threads.h
- /home/tim/Documents/project/libeventTestServer/threads.cpp
+ /home/tim/Documents/project/libeventTest/server/threads.cpp

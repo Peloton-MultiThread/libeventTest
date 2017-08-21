@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/tim/Documents/project/libeventTestServer/main.cpp" "/home/tim/Documents/project/libeventTestServer/cmake-build-debug/CMakeFiles/libeventTest.dir/main.cpp.o"
-  "/home/tim/Documents/project/libeventTestServer/threads.cpp" "/home/tim/Documents/project/libeventTestServer/cmake-build-debug/CMakeFiles/libeventTest.dir/threads.cpp.o"
+  "/home/tim/Documents/project/libeventTest/server/main.cpp" "/home/tim/Documents/project/libeventTest/server/cmake-build-debug/CMakeFiles/libeventTest.dir/main.cpp.o"
+  "/home/tim/Documents/project/libeventTest/server/threads.cpp" "/home/tim/Documents/project/libeventTest/server/cmake-build-debug/CMakeFiles/libeventTest.dir/threads.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

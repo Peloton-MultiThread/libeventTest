@@ -1,4 +1,4 @@
-# Install script for directory: /home/tim/Documents/project/libeventTestClient
+# Install script for directory: /home/tim/Documents/project/libeventTest/client
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/tim/Documents/project/libeventTestClient/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/tim/Documents/project/libeventTest/client/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
